@@ -1,5 +1,5 @@
 use prettify;
 
 fn main() {
-    prettify::prettify(&String::from(""));
+    prettify::prettify_default(&String::from(""));
 }
