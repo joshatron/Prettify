@@ -18,8 +18,8 @@ impl Converter for JsonConverter {
 
     fn convert(&self, input: &String, options: &Options) -> Result<String, Error> {
         match json::parse(input) {
-            Ok(parsed) => Ok(String::new()),
-            Err(_) => Err(Error::Cannot_Convert),
+            Ok(parsed) => Ok(json::stringify_pretty(parsed, options.indent_size.into())),
+            Err(_) => Err(Error::CannotConvert),
         }
     }
 }
@@ -35,11 +35,11 @@ mod tests {
 
         assert_eq!(
             converter.convert(&String::from("not json"), &options),
-            Err(Error::Cannot_Convert)
+            Err(Error::CannotConvert)
         );
         assert_eq!(
             converter.convert(&String::from("{not quite json}"), &options),
-            Err(Error::Cannot_Convert)
+            Err(Error::CannotConvert)
         );
     }
 
@@ -48,12 +48,64 @@ mod tests {
         let converter = JsonConverter::new();
         let options = Options::default();
 
-        converter.convert(&String::from("{\"json\": true}"), &options);
-        converter.convert(
-            &String::from(
-                "{\"json\":true,\"complex\":[\"field1\",\"field2\"],\"object\":{\"field3\":4}}",
+        assert_eq!(
+            converter.convert(&String::from(r#"{"json": true}"#), &options),
+            Ok(String::from(
+                r#"{
+    "json": true
+}"#
+            ))
+        );
+        assert_eq!(
+            converter.convert(
+                &String::from(
+                    r#"{
+  "json": false
+}"#
+                ),
+                &options
             ),
-            &options,
+            Ok(String::from(
+                r#"{
+    "json": false
+}"#
+            ))
+        );
+        assert_eq!(
+            converter.convert(
+                &String::from(
+                    r#"{"json":true,"complex":["field1","field2"],"object":{"field3":4}}"#,
+                ),
+                &options,
+            ),
+            Ok(String::from(
+                r#"{
+    "json": true,
+    "complex": [
+        "field1",
+        "field2"
+    ],
+    "object": {
+        "field3": 4
+    }
+}"#
+            ))
+        );
+    }
+
+    #[test]
+    fn test_convert_different_indent_size() {
+        let converter = JsonConverter::new();
+        let mut options = Options::default();
+        options.indent_size = 2;
+
+        assert_eq!(
+            converter.convert(&String::from(r#"{"json":"string"}"#), &options),
+            Ok(String::from(
+                r#"{
+  "json": "string"
+}"#
+            ))
         );
     }
 }

@@ -1,5 +1,5 @@
 pub struct Options {
-    indent_size: usize,
+    pub indent_size: u8,
 }
 
 impl Options {
