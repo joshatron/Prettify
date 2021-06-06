@@ -16,7 +16,7 @@ impl Converter for JsonConverter {
         "JSON"
     }
 
-    fn convert(&self, input: &String, options: &Options) -> Result<String, Error> {
+    fn prettify(&self, input: &String, options: &Options) -> Result<String, Error> {
         match json::parse(input) {
             Ok(parsed) => Ok(json::stringify_pretty(parsed, options.indent_size.into())),
             Err(_) => Err(Error::CannotConvert),
@@ -34,11 +34,11 @@ mod tests {
         let options = Options::default();
 
         assert_eq!(
-            converter.convert(&String::from("not json"), &options),
+            converter.prettify(&String::from("not json"), &options),
             Err(Error::CannotConvert)
         );
         assert_eq!(
-            converter.convert(&String::from("{not quite json}"), &options),
+            converter.prettify(&String::from("{not quite json}"), &options),
             Err(Error::CannotConvert)
         );
     }
@@ -49,7 +49,7 @@ mod tests {
         let options = Options::default();
 
         assert_eq!(
-            converter.convert(&String::from(r#"{"json": true}"#), &options),
+            converter.prettify(&String::from(r#"{"json": true}"#), &options),
             Ok(String::from(
                 r#"{
     "json": true
@@ -57,7 +57,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            converter.convert(
+            converter.prettify(
                 &String::from(
                     r#"{
   "json": false
@@ -72,7 +72,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            converter.convert(
+            converter.prettify(
                 &String::from(
                     r#"{"json":true,"complex":["field1","field2"],"object":{"field3":4}}"#,
                 ),
@@ -100,7 +100,7 @@ mod tests {
         options.indent_size = 2;
 
         assert_eq!(
-            converter.convert(&String::from(r#"{"json":"string"}"#), &options),
+            converter.prettify(&String::from(r#"{"json":"string"}"#), &options),
             Ok(String::from(
                 r#"{
   "json": "string"

@@ -9,5 +9,19 @@ pub fn prettify_default(input: &String) -> String {
 }
 
 pub fn prettify(input: &String, options: &Options) -> String {
-    String::from(input)
+    for converter in converters::get_converters() {
+        if options.verbose {
+            println!("Trying to convert as {}", converter.name())
+        };
+        match converter.prettify(input, options) {
+            Ok(output) => return output,
+            Err(_) => {
+                if options.verbose {
+                    println!("Conversion failed.");
+                }
+            }
+        }
+    }
+
+    String::from("")
 }

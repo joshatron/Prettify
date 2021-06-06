@@ -1,5 +1,6 @@
 use prettify;
 
 fn main() {
-    prettify::prettify_default(&String::from(""));
+    let result = prettify::prettify_default(&String::from(r#"{"hello":"world"}"#));
+    println!("{}", result);
 }
