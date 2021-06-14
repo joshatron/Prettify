@@ -14,7 +14,12 @@ pub fn prettify(input: &String, options: &Options) -> String {
             println!("Trying to convert as {}", converter.name())
         };
         match converter.prettify(input, options) {
-            Ok(output) => return output,
+            Ok(output) => {
+                if options.verbose {
+                    println!("Conversion successful!");
+                }
+                return output;
+            }
             Err(_) => {
                 if options.verbose {
                     println!("Conversion failed.");

@@ -2,9 +2,11 @@
 name = "prettify"
 version = "0.1.0"
 authors = ["Joshua Leger <legermjoshua@gmail.com>"]
+description = "Pretty prints minified data such as JSON and XML."
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 json = "0.12.4"
+clap = "2.33.3"
