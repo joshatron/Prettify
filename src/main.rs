@@ -1,6 +1,7 @@
 use prettify;
 use prettify::options::Options;
 use std::fs;
+use std::io::{self, BufRead};
 extern crate clap;
 use clap::{crate_authors, crate_description, crate_name, crate_version, App, Arg, ArgMatches};
 
@@ -10,7 +11,7 @@ fn main() {
     let input = build_input(&matches);
     if input.is_empty() {
         println!("No input given.");
-        println!("Please provide either a file name or the contents in an arguement.");
+        println!("Please provide either a file name, the string in an arguement, or stdin.");
         return;
     }
 
@@ -26,7 +27,6 @@ fn main() {
     }
 }
 
-//TODO: Add ability to get input from stdin
 fn build_input(matches: &ArgMatches) -> String {
     match get_input_from_file(matches.value_of("file")) {
         Ok(s) => return s,
@@ -34,6 +34,11 @@ fn build_input(matches: &ArgMatches) -> String {
     }
 
     match get_input_from_arg(matches.value_of("INPUT")) {
+        Ok(s) => return s,
+        Err(_) => (),
+    }
+
+    match get_input_from_stdin() {
         Ok(s) => return s,
         Err(_) => (),
     }
@@ -58,6 +63,22 @@ fn get_input_from_arg(arg: Option<&str>) -> Result<String, String> {
     match arg {
         Some(s) => Ok(String::from(s)),
         None => Err(String::new()),
+    }
+}
+
+fn get_input_from_stdin() -> Result<String, String> {
+    let mut input = String::new();
+
+    let stdin = io::stdin();
+    for line in stdin.lock().lines() {
+        let line = line.expect("Could not read line from standard in");
+        input.push_str(&line);
+    }
+
+    if !input.is_empty() {
+        Ok(input)
+    } else {
+        Err(String::new())
     }
 }
 
