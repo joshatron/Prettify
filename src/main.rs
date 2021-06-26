@@ -1,5 +1,6 @@
 use prettify;
 use prettify::options::Options;
+use std::fs;
 extern crate clap;
 use clap::{crate_authors, crate_description, crate_name, crate_version, App, Arg, ArgMatches};
 
@@ -7,6 +8,12 @@ fn main() {
     let matches = get_matches();
 
     let input = build_input(&matches);
+    if input.is_empty() {
+        println!("No input given.");
+        println!("Please provide either a file name or the contents in an arguement.");
+        return;
+    }
+
     let options = build_options(&matches);
 
     let result = prettify::prettify(&input, &options);
@@ -19,10 +26,39 @@ fn main() {
     }
 }
 
-//TODO: Add ability to get input from file
 //TODO: Add ability to get input from stdin
 fn build_input(matches: &ArgMatches) -> String {
-    String::from(matches.value_of("INPUT").unwrap())
+    match get_input_from_file(matches.value_of("file")) {
+        Ok(s) => return s,
+        Err(_) => (),
+    }
+
+    match get_input_from_arg(matches.value_of("INPUT")) {
+        Ok(s) => return s,
+        Err(_) => (),
+    }
+
+    String::new()
+}
+
+fn get_input_from_file(file: Option<&str>) -> Result<String, String> {
+    match file {
+        Some(f) => {
+            let contents = fs::read_to_string(f);
+            match contents {
+                Ok(s) => Ok(s),
+                Err(_) => Err(String::new()),
+            }
+        }
+        None => Err(String::new()),
+    }
+}
+
+fn get_input_from_arg(arg: Option<&str>) -> Result<String, String> {
+    match arg {
+        Some(s) => Ok(String::from(s)),
+        None => Err(String::new()),
+    }
 }
 
 fn build_options(matches: &ArgMatches) -> Options {
@@ -67,9 +103,16 @@ fn get_matches() -> ArgMatches<'static> {
                 .help("Increases logging level to show more detailed output."),
         )
         .arg(
+            Arg::with_name("file")
+                .short("f")
+                .long("file")
+                .value_name("FILE")
+                .help("File contents to prettify.")
+                .takes_value(true),
+        )
+        .arg(
             Arg::with_name("INPUT")
                 .help("The minified string to parse.")
-                .required(true)
                 .index(1),
         )
         .get_matches()
