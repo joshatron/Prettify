@@ -8,6 +8,8 @@ pub trait Converter {
     fn prettify(&self, input: &String, options: &Options) -> Result<String, Error>;
 }
 
+//TODO: Create XML converter
+//TODO: Create base64 converter
 pub fn get_converters() -> Vec<Box<dyn Converter>> {
     vec![Box::new(json_converter::JsonConverter::new())]
 }

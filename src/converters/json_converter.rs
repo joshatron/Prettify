@@ -18,7 +18,13 @@ impl Converter for JsonConverter {
 
     fn prettify(&self, input: &String, options: &Options) -> Result<String, Error> {
         match json::parse(input) {
-            Ok(parsed) => Ok(json::stringify_pretty(parsed, options.indent_size.into())),
+            Ok(parsed) => {
+                if options.reverse {
+                    Ok(json::stringify(parsed))
+                } else {
+                    Ok(json::stringify_pretty(parsed, options.indent_size.into()))
+                }
+            }
             Err(_) => Err(Error::CannotConvert),
         }
     }
@@ -106,6 +112,25 @@ mod tests {
   "json": "string"
 }"#
             ))
+        );
+    }
+
+    #[test]
+    fn test_convert_reverse() {
+        let converter = JsonConverter::new();
+        let mut options = Options::default();
+        options.reverse = true;
+
+        assert_eq!(
+            converter.prettify(
+                &String::from(
+                    r#"{
+    "json":"string"
+}"#
+                ),
+                &options
+            ),
+            Ok(String::from(r#"{"json":"string"}"#))
         );
     }
 }

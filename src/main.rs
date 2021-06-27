@@ -17,6 +17,7 @@ fn main() {
 
     let options = build_options(&matches);
 
+    //TODO: add option to parse each line as a separate input
     let result = prettify::prettify(&input, &options);
 
     if result.is_empty() {
@@ -86,6 +87,7 @@ fn build_options(matches: &ArgMatches) -> Options {
     Options {
         indent_size: get_indent(matches),
         verbose: matches.occurrences_of("verbose") > 0,
+        reverse: matches.occurrences_of("reverse") > 0,
     }
 }
 
@@ -122,6 +124,12 @@ fn get_matches() -> ArgMatches<'static> {
                 .short("v")
                 .long("verbose")
                 .help("Increases logging level to show more detailed output."),
+        )
+        .arg(
+            Arg::with_name("reverse")
+                .short("r")
+                .long("reverse")
+                .help("Instead of prettifying, minimizes the input."),
         )
         .arg(
             Arg::with_name("file")
