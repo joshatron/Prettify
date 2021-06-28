@@ -16,7 +16,7 @@ impl Converter for JsonConverter {
         "JSON"
     }
 
-    fn prettify(&self, input: &String, options: &Options) -> Result<String, Error> {
+    fn prettify(&self, input: &str, options: &Options) -> Result<String, Error> {
         match json::parse(input) {
             Ok(parsed) => {
                 if options.reverse {

@@ -4,11 +4,11 @@ pub mod options;
 
 use self::options::Options;
 
-pub fn prettify_default(input: &String) -> String {
+pub fn prettify_default(input: &String) -> Result<String, String> {
     prettify(input, &Options::default())
 }
 
-pub fn prettify(input: &String, options: &Options) -> String {
+pub fn prettify(input: &str, options: &Options) -> Result<String, String> {
     for converter in converters::get_converters() {
         if options.verbose {
             println!("Trying to convert as {}", converter.name())
@@ -18,7 +18,7 @@ pub fn prettify(input: &String, options: &Options) -> String {
                 if options.verbose {
                     println!("Conversion successful!");
                 }
-                return output;
+                return Ok(output);
             }
             Err(_) => {
                 if options.verbose {
@@ -28,5 +28,5 @@ pub fn prettify(input: &String, options: &Options) -> String {
         }
     }
 
-    String::from("")
+    Err(String::from(input))
 }

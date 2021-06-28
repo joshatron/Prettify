@@ -2,6 +2,7 @@ use prettify;
 use prettify::options::Options;
 use std::fs;
 use std::io::{self, BufRead};
+use std::process;
 extern crate clap;
 use clap::{crate_authors, crate_description, crate_name, crate_version, App, Arg, ArgMatches};
 
@@ -10,21 +11,45 @@ fn main() {
 
     let input = build_input(&matches);
     if input.is_empty() {
-        println!("No input given.");
-        println!("Please provide either a file name, the string in an arguement, or stdin.");
-        return;
+        eprintln!("No input given.");
+        eprintln!("Please provide either a file name, the string in an arguement, or stdin.");
+        process::exit(1);
     }
 
     let options = build_options(&matches);
 
-    //TODO: add option to parse each line as a separate input
-    let result = prettify::prettify(&input, &options);
-
-    if result.is_empty() {
-        println!("Input was not in any recognized format.");
-        println!("{}", input);
+    let mut inputs: Vec<&str> = Vec::new();
+    if should_split_lines(&matches) {
+        inputs = input.lines().collect();
     } else {
-        println!("{}", result);
+        inputs.push(&input);
+    }
+
+    let mut any_errors = false;
+    for i in inputs {
+        let result = prettify::prettify(i, &options);
+        print_results(&result);
+        if result.is_err() {
+            any_errors = true;
+        }
+    }
+
+    if any_errors {
+        process::exit(1);
+    }
+}
+
+fn should_split_lines(matches: &ArgMatches) -> bool {
+    matches.occurrences_of("lines") > 0
+}
+
+fn print_results(result: &Result<String, String>) {
+    match result {
+        Ok(s) => println!("{}", s),
+        Err(s) => {
+            eprintln!("Input was not in any recognized format.");
+            eprintln!("{}", s);
+        }
     }
 }
 
@@ -130,6 +155,12 @@ fn get_matches() -> ArgMatches<'static> {
                 .short("r")
                 .long("reverse")
                 .help("Instead of prettifying, minimizes the input."),
+        )
+        .arg(
+            Arg::with_name("lines")
+                .short("l")
+                .long("lines")
+                .help("Treat each line as a seperate input."),
         )
         .arg(
             Arg::with_name("file")
