@@ -111,6 +111,7 @@ fn get_input_from_stdin() -> Result<String, String> {
 
 fn build_options(matches: &ArgMatches) -> Options {
     Options {
+        input_type: String::from(matches.value_of("type").unwrap()),
         indent_size: get_indent(matches),
         verbose: matches.occurrences_of("verbose") > 0,
         reverse: matches.occurrences_of("reverse") > 0,
@@ -136,6 +137,15 @@ fn get_matches() -> ArgMatches<'static> {
         .version(crate_version!())
         .author(crate_authors!())
         .about(crate_description!())
+        .arg(
+            Arg::with_name("type")
+                .short("t")
+                .long("type")
+                .value_name("TYPE")
+                .help("Type of data in the input. The options are JSON and all (default).")
+                .takes_value(true)
+                .default_value("all"),
+        )
         .arg(
             Arg::with_name("indent")
                 .short("i")
