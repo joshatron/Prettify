@@ -99,6 +99,7 @@ fn get_input_from_stdin() -> Result<String, String> {
     for line in stdin.lock().lines() {
         let line = line.expect("Could not read line from standard in");
         input.push_str(&line);
+        input.push('\n');
     }
 
     if !input.is_empty() {
