@@ -119,10 +119,11 @@ fn build_options(matches: &ArgMatches) -> Options {
     }
 }
 
-fn get_converter_specific(matchs: &ArgMatches) -> HashMap<String, String> {
+fn get_converter_specific(matches: &ArgMatches) -> HashMap<String, String> {
     let mut map = HashMap::new();
 
-    map.insert("indent".to_string(), get_indent(matchs).to_string());
+    map.insert("indent".to_string(), get_indent(matches).to_string());
+    map.insert("color".to_string(), get_color(matches).to_string());
 
     map
 }
@@ -139,6 +140,10 @@ fn get_indent(matches: &ArgMatches) -> u8 {
             4
         }
     }
+}
+
+fn get_color(matches: &ArgMatches) -> bool {
+    matches.occurrences_of("no color") == 0
 }
 
 fn get_matches() -> ArgMatches<'static> {
@@ -163,6 +168,12 @@ fn get_matches() -> ArgMatches<'static> {
                 .help("Number of spaces to indent the output.")
                 .takes_value(true)
                 .default_value("4"),
+        )
+        .arg(
+            Arg::with_name("no color")
+                .short("c")
+                .long("no-color")
+                .help("Disables colored output."),
         )
         .arg(
             Arg::with_name("verbose")

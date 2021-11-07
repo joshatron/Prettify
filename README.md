@@ -17,3 +17,13 @@ Finally, I want to learn how to actually ship an application.
 All of my previous projects require someone to compile my code from source, and I want to learn how packaging works.
 My goal is that when I am done, I will publish my application on Crates, Snap, and Apt to start with.
 In time, I may try adding Yum, Flatpak, AppImage, and even Brew, but I want to start with a smaller target to begin with.
+
+Todo
+----
+
+ * Create XML converter
+   * options include indent size and colorized output
+ * Create base64 converter
+ * Create CSV converter (lines up into same length columns)
+   * options include extra spacing beyond required and separater
+ * Rewrite main help to reflect what options go to what converters

@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-//TODO: Add option for colorized output
 pub struct Options {
     pub input_type: String,
     pub verbose: bool,
