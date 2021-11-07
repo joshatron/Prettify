@@ -5,11 +5,13 @@ use crate::options::Options;
 
 pub trait Converter {
     fn name(&self) -> &str;
+    fn options(&self) -> Vec<&str>;
     fn prettify(&self, input: &str, options: &Options) -> Result<String, Error>;
 }
 
 //TODO: Create XML converter
 //TODO: Create base64 converter
+//TODO: Create CSV converter
 pub fn get_converters() -> Vec<Box<dyn Converter>> {
     vec![Box::new(json_converter::JsonConverter::new())]
 }

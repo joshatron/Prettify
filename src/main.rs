@@ -1,5 +1,6 @@
 use prettify;
 use prettify::options::Options;
+use std::collections::HashMap;
 use std::fs;
 use std::io::{self, BufRead};
 use std::process;
@@ -112,10 +113,18 @@ fn get_input_from_stdin() -> Result<String, String> {
 fn build_options(matches: &ArgMatches) -> Options {
     Options {
         input_type: String::from(matches.value_of("type").unwrap()),
-        indent_size: get_indent(matches),
         verbose: matches.occurrences_of("verbose") > 0,
         reverse: matches.occurrences_of("reverse") > 0,
+        converter_specific: get_converter_specific(matches),
     }
+}
+
+fn get_converter_specific(matchs: &ArgMatches) -> HashMap<String, String> {
+    let mut map = HashMap::new();
+
+    map.insert("indent".to_string(), get_indent(matchs).to_string());
+
+    map
 }
 
 fn get_indent(matches: &ArgMatches) -> u8 {
