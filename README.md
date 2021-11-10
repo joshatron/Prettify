@@ -23,7 +23,6 @@ Todo
 
  * Create XML converter
    * options include indent size and colorized output
- * Create base64 converter
  * Create CSV converter (lines up into same length columns)
    * options include extra spacing beyond required and separater
- * Rewrite main help to reflect what options go to what converters
+ * Rewrite main help output to reflect what options go to what converters
