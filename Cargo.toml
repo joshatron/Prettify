@@ -1,8 +1,8 @@
 [package]
 name = "prettify"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Joshua Leger <legermjoshua@gmail.com>"]
-description = "Pretty prints minified data such as JSON and XML."
+description = "Pretty prints or minifies data such as JSON, Base64, and XML."
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

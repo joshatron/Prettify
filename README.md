@@ -25,4 +25,3 @@ Todo
    * options include indent size and colorized output
  * Create CSV converter (lines up into same length columns)
    * options include extra spacing beyond required and separater
- * Rewrite main help output to reflect what options go to what converters

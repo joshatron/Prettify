@@ -150,13 +150,13 @@ fn get_matches() -> ArgMatches<'static> {
     App::new(crate_name!())
         .version(crate_version!())
         .author(crate_authors!())
-        .about(crate_description!())
+        .about(&description()[..])
         .arg(
             Arg::with_name("type")
                 .short("t")
                 .long("type")
                 .value_name("TYPE")
-                .help("Type of data in the input. The options are JSON and all (default).")
+                .help("Type of data in the input. The options are JSON, Base64, and all. All will try each type till one succeeds.")
                 .takes_value(true)
                 .default_value("all"),
         )
@@ -165,7 +165,7 @@ fn get_matches() -> ArgMatches<'static> {
                 .short("i")
                 .long("indent")
                 .value_name("INDENT")
-                .help("Number of spaces to indent the output.")
+                .help("Number of spaces to indent the output. (Only for formats: JSON)")
                 .takes_value(true)
                 .default_value("4"),
         )
@@ -173,7 +173,7 @@ fn get_matches() -> ArgMatches<'static> {
             Arg::with_name("no color")
                 .short("c")
                 .long("no-color")
-                .help("Disables colored output."),
+                .help("Disables colored output. (Only for formats: JSON)"),
         )
         .arg(
             Arg::with_name("verbose")
@@ -185,7 +185,7 @@ fn get_matches() -> ArgMatches<'static> {
             Arg::with_name("reverse")
                 .short("r")
                 .long("reverse")
-                .help("Instead of prettifying, minimizes the input."),
+                .help("Instead of prettifying, minimizes the input. For Base64, you need to specify '--type Base64' because otherwise it will skip trying that conversion since it is guaranteed to succeed."),
         )
         .arg(
             Arg::with_name("lines")
@@ -207,4 +207,13 @@ fn get_matches() -> ArgMatches<'static> {
                 .index(1),
         )
         .get_matches()
+}
+
+fn description() -> String {
+    let mut description = String::new();
+    description.push_str(crate_description!());
+    description.push_str("\n");
+    description.push_str("Some options are only for specific formats, which are specified below.");
+
+    description
 }
